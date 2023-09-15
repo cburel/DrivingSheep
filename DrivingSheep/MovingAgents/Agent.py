@@ -1,3 +1,4 @@
+from turtle import Vec2D
 import pygame
 from pygame.locals import *
 import Constants
@@ -5,18 +6,39 @@ import Constants
 class Agent():
 	def __init__(self, pos, size, spd, color):
 		self.pos = pos
-		self.size = size
+		self.size = pygame.Vector2(size, size)
 		self.spd = spd
 		self.color = color
 		self.vel = pygame.Vector2(0,0)
-		self.center = self.calcCenter()
-		self.rect = pygame.Rect(self.pos.x, self.pos.y, self.size, self.size)
+		self.target = 0
+		self.center = self.updateCenter()
+		self.rect = self.updateRect()
 
 	#pretty print agent information
 	def __str__(self):
 		return ("Size: " +  str(self.size) + ", " + "Pos: " + str(self.pos) + ", " + "Vel: " + str(self.vel) + ", " + "Center: " + str(self.center))
 
-	def draw(self, screen, closestEnemy):
+	def updateVelocity(self, velocity):
+		velocity = pygame.Vector2.normalize(velocity)
+
+	# calculate the center of the agent's rect
+	def updateCenter(self):
+		return pygame.Vector2(self.pos.x + self.size / 2, self.pos.y + self.size / 2)
+
+	def updateCenter(self):
+		self.rect = pygame.Rect(self.pos.x, self.pos.y, self.size, self.size)
+
+	# check for collision with another agent
+	def isInCollision(self, agent):
+
+		if agent != None:
+			# if collision is detected, execute collision 
+			if self.rect.colliderect(agent.rect):
+				return True
+
+		return False
+
+	def draw(self, screen):
 
 		#draw the rectangle
 		pygame.draw.rect(screen, self.color, pygame.Rect(self.pos.x, self.pos.y, self.size, self.size))
@@ -37,19 +59,7 @@ class Agent():
 		lineEnd = pygame.Vector2(self.calcCenter().x + scaledVel.x, self.calcCenter().y + scaledVel.y)
 		pygame.draw.line(screen, (0, 0, 255), lineStart, lineEnd, 3)
 
-		#draw target line
-		if closestEnemy != None:
-			pygame.draw.line(screen, (255, 0, 0), (self.calcCenter().x, self.calcCenter().y), (closestEnemy.calcCenter().x, closestEnemy.calcCenter().y), 3)
-	
-	# check for collision with another agent
-	def detectCollision(self, other, enemies):
-
-		if other != None:
-			# if collision is detected, execute collision 
-			if self.rect.colliderect(other.rect):
-				enemies.remove(other)
-
-	def update(self, other):
+	def update(self, bounds):
 
 		#move the agent and its collision rect
 		self.pos += pygame.Vector2.normalize(self.vel) * self.spd
@@ -69,9 +79,8 @@ class Agent():
 			self.pos.y = Constants.DISPLAY_HEIGHT - Constants.BORDER_RADIUS - self.size
 			self.vel.y = -self.vel.y
 
-	# calculate the center of the agent's rect
-	def calcCenter(self):
-		return pygame.Vector2(self.pos.x + self.size / 2, self.pos.y + self.size / 2)
+		self.updateRect()
+		self.updateCenter()
 
 
 			
