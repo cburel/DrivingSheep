@@ -19,7 +19,7 @@ class Agent():
 		return ("Size: " +  str(self.size) + ", " + "Pos: " + str(self.pos) + ", " + "Vel: " + str(self.vel) + ", " + "Center: " + str(self.center))
 
 	def updateVelocity(self, velocity):
-		velocity = pygame.Vector2.normalize(velocity)
+		self.vel = pygame.Vector2.normalize(velocity)
 
 	# calculate the center of the agent's rect
 	def updateCenter(self):
@@ -30,13 +30,11 @@ class Agent():
 
 	# check for collision with another agent
 	def isInCollision(self, agent):
-
 		if agent != None:
-			# if collision is detected, execute collision 
 			if self.rect.colliderect(agent.rect):
 				return True
-
-		return False
+			else:
+				return False
 
 	def draw(self, screen):
 

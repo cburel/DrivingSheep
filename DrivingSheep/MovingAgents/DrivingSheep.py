@@ -12,21 +12,22 @@ pygame.init()
 clock = pygame.time.Clock();
 screen = pygame.display.set_mode((Constants.DISPLAY_WIDTH, Constants.DISPLAY_HEIGHT))
 player = Player(pygame.Vector2(Constants.PLAYER_XPOS, Constants.PLAYER_YPOS), (Constants.PLAYER_SIZE), Constants.PLAYER_SPD, Constants.PLAYER_COLOR)
+bounds = pygame.Vector2(Constants.DISPLAY_WIDTH, Constants.DISPLAY_HEIGHT)
 
 enemies = []
 for i in range (1, Constants.MAX_ENEMIES + 1):
-	enemies.append(Enemy(pygame.Vector2(random.randrange(0, Constants.DISPLAY_WIDTH), random.randrange(0, Constants.DISPLAY_WIDTH)), Constants.ENEMY_SIZE, Constants.ENEMY_SPD, Constants.ENEMY_COLOR))
+	enemies.append(Enemy(pygame.Vector2(random.randrange(0, bounds.x), random.randrange(0, bounds.y)), Constants.ENEMY_SIZE, Constants.ENEMY_SPD, Constants.ENEMY_COLOR))
 
 #main gameplay loop
-while True:
+hasQuit = False
+while not hasQuit:
 
 	# event handler
 	for event in pygame.event.get():
 
 		#quit the game
 		if event.type == QUIT:
-			pygame.quit()
-			quit()
+			hasQuit = True
 				
 	#make screen cornflower blue
 	screen.fill(Constants.BACKGROUND_COLOR)
@@ -40,10 +41,16 @@ while True:
 	#draw the player agent
 	player.draw(screen)
 
-	player.isInCollision(enemy)
+	#detect player-enemy tag
+	if player.isInCollision(enemy):
+		print("collision!")
 		
 	#flip display buffer
 	pygame.display.flip()
 
 	#constrain to 60 fps
 	clock.tick(60)
+
+#quit the game
+pygame.quit()
+quit()

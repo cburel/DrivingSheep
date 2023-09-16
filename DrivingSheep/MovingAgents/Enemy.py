@@ -13,8 +13,6 @@ class Enemy(Agent):
 		distance = self.pos - player.pos
 		if distance.length() < Constants.FLEE_RANGE:
 			self.vel = pygame.Vector2.normalize(distance)
-		
-			fleeingFrom = player
 
 		# otherwise, wander
 		else:
@@ -30,7 +28,4 @@ class Enemy(Agent):
 			self.vel.x += math.cos(theta) - math.sin(theta)
 			self.vel.y += math.sin(theta) - math.cos(theta)
 
-			fleeingFrom = None
-
-		super().update(player)
-		return fleeingFrom
+		super().update()

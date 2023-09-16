@@ -9,7 +9,7 @@ clock = pygame.time.Clock();
 
 class Player(Agent):
 
-	def update(self, enemies: List):
+	def update(self, enemies: List, bounds):
 
 		# gets nearest enemy and moves player towards it
 		# shoutout to Rabbid76 on SO for the basics on this next line
@@ -20,6 +20,4 @@ class Player(Agent):
 
 			self.vel = enemy.pos - self.pos
 				
-			super().update(enemy)
-
-		return enemy
+			super().update(bounds)
