@@ -27,7 +27,6 @@ class Dog(Agent):
 			self.targetAgent = max([e for e in enemies], key=lambda e: self.pos.distance_to(pygame.math.Vector2(e.pos.x, e.pos.y)))
 
 	def update(self, bounds, enemies: List):
-
 		# gets appropriate enemy and moves player towards it
 		# shoutout to Rabbid76 on SO for the lambda fn
 		if self.hasTagged == False:

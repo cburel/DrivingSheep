@@ -39,8 +39,6 @@ class Sheep(Agent):
 		# flee if player is close enough
 		isFleeing = self.isPlayerClose(player)
 		if isFleeing:
-			#self.vel = pygame.Vector2.normalize(self.pos - player.pos)
-
 			#store the calculated, normalized direction to the dog
 			dirToDog = pygame.Vector2.normalize(player.pos - self.pos)
 
