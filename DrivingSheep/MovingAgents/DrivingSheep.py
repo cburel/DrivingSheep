@@ -33,18 +33,17 @@ while not hasQuit:
 	screen.fill(Constants.BACKGROUND_COLOR)
 	
 	#update the agents
-	targetEnemy = player.update(enemies)
+	targetEnemy = player.update(bounds, enemies)
 	for enemy in enemies:
-		fleeingFrom = enemy.update(player)
+		fleeingFrom = enemy.update(bounds, player)
 		enemy.draw(screen)
 
 	#draw the player agent
 	player.draw(screen)
 
 	#detect player-enemy tag
-	if player.isInCollision(enemy):
-		print("collision!")
-		
+	player.isInCollision(enemy)
+	
 	#flip display buffer
 	pygame.display.flip()
 

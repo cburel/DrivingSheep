@@ -25,6 +25,7 @@ class Agent():
 	def updateCenter(self):
 		return pygame.Vector2(self.pos.x + self.size.x / 2, self.pos.y + self.size.y / 2)
 
+	# calculate the collision rect
 	def updateRect(self):
 		return pygame.Rect(self.pos.x, self.pos.y, self.size.x, self.size.y)
 
@@ -32,15 +33,19 @@ class Agent():
 	def isInCollision(self, agent):
 		if agent != None:
 			if self.rect.colliderect(agent.rect):
+				print("collision!")
 				return True
 			else:
 				return False
 
+	# draw the agent
 	def draw(self, screen):
 
+		#update rect position
+		self.rect = self.updateRect()
+
 		#draw the rectangle
-		pygame.draw.rect(screen, self.color, pygame.Rect(self.pos.x, self.pos.y, self.size.x, self.size.y))
-		self.rect = pygame.Rect(self.pos.x, self.pos.y, self.size.x, self.size.y)
+		pygame.draw.rect(screen, self.color, self.rect)
 		
 		#draw debug collision rect border
 		pygame.draw.rect(screen, (0,0,0), self.rect, 1)
@@ -57,27 +62,29 @@ class Agent():
 		lineEnd = pygame.Vector2(self.updateCenter().x + scaledVel.x, self.updateCenter().y + scaledVel.y)
 		pygame.draw.line(screen, (0, 0, 255), lineStart, lineEnd, 3)
 
+	#update the agent
 	def update(self, bounds):
 
-		#move the agent and its collision rect
+		#move the agent
 		self.pos += pygame.Vector2.normalize(self.vel) * self.spd
+		
+		self.updateRect()
+		self.updateCenter()
 
-		#keep agent in bounds of world and make them move off borders a little nicer
+		#keep agent in bounds of world
 		if self.pos.x <= 0:
 			self.pos.x = Constants.BORDER_RADIUS + self.size.x
 			self.vel.x = -self.vel.x
-		if self.pos.x >= Constants.DISPLAY_WIDTH:
-			self.pos.x = Constants.DISPLAY_WIDTH - Constants.BORDER_RADIUS - self.size.x
+		if self.pos.x >= bounds.x:
+			self.pos.x = bounds.x - Constants.BORDER_RADIUS - self.size.x
 			self.vel.x = -self.vel.x
 		if self.pos.y <= 0:
 			self.pos.y = Constants.BORDER_RADIUS + self.size.y
 			self.vel.y = -self.vel.y
-		if self.pos.y >= Constants.DISPLAY_HEIGHT:
-			self.pos.y = Constants.DISPLAY_HEIGHT - Constants.BORDER_RADIUS - self.size.y
+		if self.pos.y >= bounds.y:
+			self.pos.y = bounds.y - Constants.BORDER_RADIUS - self.size.y
 			self.vel.y = -self.vel.y
 
-		self.updateRect()
-		self.updateCenter()
 
 
 			

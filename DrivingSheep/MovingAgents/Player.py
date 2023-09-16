@@ -1,3 +1,4 @@
+from asyncio.windows_events import NULL
 from typing import List
 import pygame
 from pygame.locals import *
@@ -9,15 +10,18 @@ clock = pygame.time.Clock();
 
 class Player(Agent):
 
-	def update(self, enemies: List, bounds):
+	def __init__(self, pos, size, spd, color):
+		super().__init__(pos, size, spd, color)
+		self.targetAgent = NULL
+
+	def update(self, bounds, enemies: List):
 
 		# gets nearest enemy and moves player towards it
 		# shoutout to Rabbid76 on SO for the basics on this next line
-		enemy = None
-
 		if len(enemies) != 0:
-			enemy = min([e for e in enemies], key=lambda e: self.pos.distance_to(pygame.math.Vector2(e.pos.x, e.pos.y)))
+			self.targetAgent = min([e for e in enemies], key=lambda e: self.pos.distance_to(pygame.math.Vector2(e.pos.x, e.pos.y)))
 
-			self.vel = enemy.pos - self.pos
-				
+			self.vel = self.targetAgent.pos - self.pos
+			
+			super().updateVelocity(self.vel)
 			super().update(bounds)
