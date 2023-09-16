@@ -6,6 +6,9 @@ import math
 import Constants
 from Agent import Agent
 
+#setup
+clock = pygame.time.Clock();
+
 class Sheep(Agent):
 
 	def __init__(self, image, pos, size, spd, color):
@@ -36,7 +39,21 @@ class Sheep(Agent):
 		# flee if player is close enough
 		isFleeing = self.isPlayerClose(player)
 		if isFleeing:
-			self.vel = pygame.Vector2.normalize(self.pos - player.pos)
+			#self.vel = pygame.Vector2.normalize(self.pos - player.pos)
+
+			#store the calculated, normalized direction to the dog
+			dirToDog = pygame.Vector2.normalize(player.pos - self.pos)
+
+			#scale direction by the weight of this force to get applied force and store it
+			dirToDogForce = dirToDog * Constants.ENEMY_FLEE_FORCE
+
+			#take applied force, normalize it, scale it by deltatime and speed to modify sheep's velocity
+			dirToDogForceNorm = pygame.Vector2.normalize(dirToDogForce)
+			deltaTime = clock.tick(Constants.FRAME_RATE) * .001 * Constants.FRAME_RATE
+			pygame.Vector2.scale_to_length(dirToDogForceNorm, deltaTime * self.spd)
+			self.vel += dirToDogForceNorm
+
+
 			self.calcTrackingVelocity(player)
 
 		# otherwise, wander

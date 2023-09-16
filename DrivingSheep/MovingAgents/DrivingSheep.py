@@ -47,7 +47,7 @@ while not hasQuit:
 
 	#detect player-enemy tag
 	if player.isInCollision(targetEnemy):
-		enemies.remove(targetEnemy)
+		player.swapTarget(enemies)
 	
 	#flip display buffer
 	pygame.display.flip()
