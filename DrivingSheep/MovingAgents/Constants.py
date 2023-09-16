@@ -5,6 +5,9 @@ DISPLAY_HEIGHT = 600
 BACKGROUND_COLOR = (100, 149, 237)
 BORDER_RADIUS = 5
 
+# agent properties
+VECTOR_LINE_LENGTH = 25
+
 #player properties
 PLAYER_SIZE = 10
 PLAYER_SPD = 5.5

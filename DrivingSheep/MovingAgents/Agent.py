@@ -23,10 +23,10 @@ class Agent():
 
 	# calculate the center of the agent's rect
 	def updateCenter(self):
-		return pygame.Vector2(self.pos.x + self.size / 2, self.pos.y + self.size / 2)
+		return pygame.Vector2(self.pos.x + self.size.x / 2, self.pos.y + self.size.y / 2)
 
-	def updateCenter(self):
-		self.rect = pygame.Rect(self.pos.x, self.pos.y, self.size, self.size)
+	def updateRect(self):
+		return pygame.Rect(self.pos.x, self.pos.y, self.size.x, self.size.y)
 
 	# check for collision with another agent
 	def isInCollision(self, agent):
@@ -41,42 +41,41 @@ class Agent():
 	def draw(self, screen):
 
 		#draw the rectangle
-		pygame.draw.rect(screen, self.color, pygame.Rect(self.pos.x, self.pos.y, self.size, self.size))
-		self.rect = pygame.Rect(self.pos.x, self.pos.y, self.size, self.size)
+		pygame.draw.rect(screen, self.color, pygame.Rect(self.pos.x, self.pos.y, self.size.x, self.size.y))
+		self.rect = pygame.Rect(self.pos.x, self.pos.y, self.size.x, self.size.y)
 		
 		#draw debug collision rect border
 		pygame.draw.rect(screen, (0,0,0), self.rect, 1)
 
 		# draw debug line
-		lineStart = self.calcCenter()
+		lineStart = self.updateCenter()
 		scaledVel = pygame.Vector2(self.vel.x, self.vel.y)
 		
 		if self.vel == (0,0):
 			scaledVel = self.vel
 		else:
-			pygame.Vector2.scale_to_length(scaledVel, self.size)
+			pygame.Vector2.scale_to_length(scaledVel, Constants.VECTOR_LINE_LENGTH)
 		
-		lineEnd = pygame.Vector2(self.calcCenter().x + scaledVel.x, self.calcCenter().y + scaledVel.y)
+		lineEnd = pygame.Vector2(self.updateCenter().x + scaledVel.x, self.updateCenter().y + scaledVel.y)
 		pygame.draw.line(screen, (0, 0, 255), lineStart, lineEnd, 3)
 
 	def update(self, bounds):
 
 		#move the agent and its collision rect
 		self.pos += pygame.Vector2.normalize(self.vel) * self.spd
-		self.rect = pygame.Rect(self.pos.x, self.pos.y, self.size, self.size)
 
 		#keep agent in bounds of world and make them move off borders a little nicer
 		if self.pos.x <= 0:
-			self.pos.x = Constants.BORDER_RADIUS + self.size
+			self.pos.x = Constants.BORDER_RADIUS + self.size.x
 			self.vel.x = -self.vel.x
 		if self.pos.x >= Constants.DISPLAY_WIDTH:
-			self.pos.x = Constants.DISPLAY_WIDTH - Constants.BORDER_RADIUS - self.size
+			self.pos.x = Constants.DISPLAY_WIDTH - Constants.BORDER_RADIUS - self.size.x
 			self.vel.x = -self.vel.x
 		if self.pos.y <= 0:
-			self.pos.y = Constants.BORDER_RADIUS + self.size
+			self.pos.y = Constants.BORDER_RADIUS + self.size.y
 			self.vel.y = -self.vel.y
 		if self.pos.y >= Constants.DISPLAY_HEIGHT:
-			self.pos.y = Constants.DISPLAY_HEIGHT - Constants.BORDER_RADIUS - self.size
+			self.pos.y = Constants.DISPLAY_HEIGHT - Constants.BORDER_RADIUS - self.size.y
 			self.vel.y = -self.vel.y
 
 		self.updateRect()

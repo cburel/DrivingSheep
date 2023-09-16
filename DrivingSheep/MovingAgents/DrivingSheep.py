@@ -35,12 +35,12 @@ while True:
 	targetEnemy = player.update(enemies)
 	for enemy in enemies:
 		fleeingFrom = enemy.update(player)
-		enemy.draw(screen, fleeingFrom)
+		enemy.draw(screen)
 
 	#draw the player agent
-	player.draw(screen, targetEnemy)
+	player.draw(screen)
 
-	player.detectCollision(targetEnemy, enemies)
+	player.isInCollision(enemy)
 		
 	#flip display buffer
 	pygame.display.flip()
