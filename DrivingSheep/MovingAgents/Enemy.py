@@ -6,7 +6,7 @@ import math
 import Constants
 from Agent import Agent
 
-class Enemy(Agent):
+class Sheep(Agent):
 
 	def __init__(self, image, pos, size, spd, color):
 		super().__init__(image, pos, size, spd, color)

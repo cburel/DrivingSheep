@@ -8,7 +8,7 @@ from Agent import Agent
 clock = pygame.time.Clock();
 
 
-class Player(Agent):
+class Dog(Agent):
 
 	def __init__(self, image, pos, size, spd, color):
 		super().__init__(image, pos, size, spd, color)
