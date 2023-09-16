@@ -48,9 +48,6 @@ class Agent():
 
 	# draw the agent
 	def draw(self, screen):
-				
-		#draw rect position
-		self.rect = self.updateRect()
 		
 		#draw the rectangle
 		pygame.draw.rect(screen, self.color, self.rect)
@@ -76,9 +73,7 @@ class Agent():
 	def update(self, bounds):
 
 		#move the agent
-		self.pos += pygame.Vector2.normalize(self.vel) * self.spd		
-		self.rect = self.updateRect()
-		self.center = self.updateCenter()
+		self.pos += pygame.Vector2.normalize(self.vel) * self.spd
 
 		#keep agent in bounds of world
 		if self.pos.x <= 0:
@@ -93,6 +88,9 @@ class Agent():
 		if self.pos.y >= bounds.y:
 			self.pos.y = bounds.y - Constants.BORDER_RADIUS - self.size.y
 			self.vel.y = -self.vel.y
+
+		self.rect = self.updateRect()
+		self.center = self.updateCenter()
 
 
 			
