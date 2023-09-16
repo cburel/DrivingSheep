@@ -29,7 +29,7 @@ class Agent():
 
 	# calculate the collision rect
 	def updateRect(self):
-		return pygame.Rect(self.pos.x, self.pos.y, self.size.x, self.size.y)
+		return pygame.Rect(self.pos, self.size)
 
 	#calculate agent's surface and rect
 	def calcSurface(self):
@@ -48,14 +48,14 @@ class Agent():
 
 	# draw the agent
 	def draw(self, screen):
-		
-		#draw the rectangle
-		pygame.draw.rect(screen, self.color, self.rect)
 				
 		#draw rect position
 		self.rect = self.updateRect()
 		
-		#draw debug collision rect border
+		#draw the rectangle
+		pygame.draw.rect(screen, self.color, self.rect)
+				
+		#draw black debug collision rect border
 		pygame.draw.rect(screen, (0,0,0), self.rect, 1)
 
 		# draw debug line
