@@ -8,8 +8,8 @@ from Agent import Agent
 
 class Enemy(Agent):
 
-	def __init__(self, pos, size, spd, color):
-		super().__init__(pos, size, spd, color)
+	def __init__(self, image, pos, size, spd, color):
+		super().__init__(image, pos, size, spd, color)
 		self.isFleeing = False
 		self.targetPos = None
 	

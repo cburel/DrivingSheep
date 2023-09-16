@@ -10,8 +10,8 @@ clock = pygame.time.Clock();
 
 class Player(Agent):
 
-	def __init__(self, pos, size, spd, color):
-		super().__init__(pos, size, spd, color)
+	def __init__(self, image, pos, size, spd, color):
+		super().__init__(image, pos, size, spd, color)
 		self.targetAgent = NULL
 
 	def update(self, bounds, enemies: List):
