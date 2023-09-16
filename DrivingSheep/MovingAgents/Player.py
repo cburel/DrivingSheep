@@ -17,6 +17,7 @@ class Player(Agent):
 	def update(self, bounds, enemies: List):
 		# gets nearest enemy and moves player towards it
 		# shoutout to Rabbid76 on SO for the basics on this next line
+
 		if len(enemies) != 0:
 			self.targetAgent = min([e for e in enemies], key=lambda e: self.pos.distance_to(pygame.math.Vector2(e.pos.x, e.pos.y)))
 
@@ -24,3 +25,5 @@ class Player(Agent):
 			
 			super().updateVelocity(self.vel)
 			super().update(bounds)
+
+		return self.targetAgent
