@@ -36,13 +36,14 @@ while not hasQuit:
 	screen.fill(Constants.BACKGROUND_COLOR)
 	
 	#update the agents
-	targetEnemy = player.update(bounds, enemies)
+	player.update(bounds, enemies)
 	for enemy in enemies:
-		fleeingFrom = enemy.update(bounds, player)
-		enemy.draw(screen)
+		enemy.update(bounds, player)
 
-	#draw the player agent
+	#draw the agents
 	player.draw(screen)
+	for enemy in enemies:
+		enemy.draw(screen)
 
 	#detect player-enemy tag
 	if player.isInCollision(enemy):

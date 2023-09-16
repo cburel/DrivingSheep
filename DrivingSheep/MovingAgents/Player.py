@@ -15,7 +15,6 @@ class Player(Agent):
 		self.targetAgent = NULL
 
 	def update(self, bounds, enemies: List):
-
 		# gets nearest enemy and moves player towards it
 		# shoutout to Rabbid76 on SO for the basics on this next line
 		if len(enemies) != 0:

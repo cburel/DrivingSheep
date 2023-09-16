@@ -48,12 +48,12 @@ class Agent():
 
 	# draw the agent
 	def draw(self, screen):
-
-		#update rect position
-		self.rect = self.updateRect()
-
+		
 		#draw the rectangle
 		pygame.draw.rect(screen, self.color, self.rect)
+				
+		#draw rect position
+		self.rect = self.updateRect()
 		
 		#draw debug collision rect border
 		pygame.draw.rect(screen, (0,0,0), self.rect, 1)
