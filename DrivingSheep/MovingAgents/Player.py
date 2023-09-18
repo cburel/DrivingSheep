@@ -39,10 +39,7 @@ class Dog(Agent):
 		dirToSheepForceNorm = pygame.Vector2.normalize(dirToSheepForce)
 		pygame.Vector2.scale_to_length(dirToSheepForceNorm, Constants.DELTATIME * self.spd)
 		self.vel += dirToSheepForceNorm
-
-		#draw line representing each boundary force when it is applied from the boundary to the agent.
-		#pygame.draw.line(screen, (0, 0, 255), boundsForce, self.center)
-			
+					
 		super().updateVelocity(self.vel)
 		super().update(bounds, screen)
 
