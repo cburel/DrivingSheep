@@ -76,7 +76,9 @@ class Agent():
 
 		#for each boundary agent is near, add boundary's normal force to list, compute force pushing away from boundary
 		if self.center.x < Constants.BORDER_RADIUS:
-			boundsForce -= pygame.Vector2(0 - self.center.x, 0)
+			#subract distance from boundary from threshold
+			#boundsForce -= pygame.Vector2(0 - self.center.x, 0)
+
 			boundsNearby += [pygame.Vector2(0, self.center.y)]
 		elif self.center.x > bounds.x - Constants.BORDER_RADIUS:
 			boundsForce -= pygame.Vector2(bounds.x - self.center.x, 0)
