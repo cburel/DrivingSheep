@@ -90,7 +90,8 @@ class Agent():
 			boundsNearby += [pygame.Vector2(self.center.x, bounds.y)]
 
 		#scale total boundary force by the weight
-		pygame.Vector2.scale_to_length(boundsForce, Constants.BOUNDARY_FORCE)
+		if boundsForce != pygame.Vector2(0,0):
+			pygame.Vector2.scale_to_length(boundsForce, Constants.BOUNDARY_FORCE)
 
 		#add scaled boundary force to applied force we have before (seek, flee, wander)
 		self.vel += boundsForce
@@ -99,6 +100,7 @@ class Agent():
 		self.vel += pygame.Vector2.normalize(self.vel) * Constants.DELTATIME
 
 		#draw line representing each boundary force when it is applied from the boundary to the agent.
+		#pygame.draw.line(screen, (0, 0, 255), boundsForce, self.center)
 
 	#update the agent
 	def update(self, bounds):
