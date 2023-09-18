@@ -52,6 +52,10 @@ class Agent():
 		
 		#draw the rectangle
 		pygame.draw.rect(screen, self.color, self.rect)
+
+		#calculate surface to draw
+		self.surf = pygame.transform.rotate(self.image, self.angle)
+		upperLeft = self.center - pygame.Vector2(self.surf.get_width(), self.surf.get_height()/2)
 				
 		#draw black debug collision rect border
 		pygame.draw.rect(screen, (0,0,0), self.rect, 1)
@@ -67,11 +71,9 @@ class Agent():
 		
 		lineEnd = pygame.Vector2(self.updateCenter().x + scaledVel.x, self.updateCenter().y + scaledVel.y)
 		pygame.draw.line(screen, (0, 0, 255), lineStart, lineEnd, 3)
-
-		#draw line representing each boundary force when it is applied from the boundary to the agent.
-		#pygame.draw.line(screen, (0, 0, 255), boundsForce, self.center)
-
-		#screen.blit(self.surf, [self.upperLeft.x, self.upperLeft.y])
+		
+		#blit the dog/sheep image
+		screen.blit(self.surf, [upperLeft.x, upperLeft.y])
 
 	def computeBoundaryForces(self, bounds, screen):	
 		boundsNearbyList = []

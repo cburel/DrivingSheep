@@ -12,6 +12,8 @@ DELTATIME = CLOCK.tick(60) * .001 * FRAME_RATE
 
 # agent properties
 VECTOR_LINE_LENGTH = 25
+AGENT_WIDTH = 16
+AGENT_HEIGHT = 32
 
 #player properties
 PLAYER_SIZE = 10
