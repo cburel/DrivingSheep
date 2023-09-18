@@ -68,65 +68,60 @@ class Agent():
 		lineEnd = pygame.Vector2(self.updateCenter().x + scaledVel.x, self.updateCenter().y + scaledVel.y)
 		pygame.draw.line(screen, (0, 0, 255), lineStart, lineEnd, 3)
 
+		#draw line representing each boundary force when it is applied from the boundary to the agent.
+		#pygame.draw.line(screen, (0, 0, 255), boundsForce, self.center)
+
 		#screen.blit(self.surf, [self.upperLeft.x, self.upperLeft.y])
 
-	def computeBoundaryInfluence(self, bounds):
+	def computeBoundaryInfluence(self, bounds, screen):	
 		boundsNearby = []
 		boundsForce = pygame.Vector2(0,0)
+		boundsSum = pygame.Vector2(0,0)
 
-		#for each boundary agent is near, add boundary's normal force to list, compute force pushing away from boundary
+		#for each boundary agent is near, add boundary's normal force to list, compute force pushing away from boundary. add this force to a sum.
 		if self.center.x < Constants.BORDER_RADIUS:
-			#subract distance from boundary from threshold
-			#boundsForce -= pygame.Vector2(0 - self.center.x, 0)
-
 			boundsNearby += [pygame.Vector2(0, self.center.y)]
+			boundsForce = (self.center - boundsNearby[0]) - pygame.Vector2(Constants.BORDER_RADIUS)
+			boundsSum += boundsForce
 		elif self.center.x > bounds.x - Constants.BORDER_RADIUS:
-			boundsForce -= pygame.Vector2(bounds.x - self.center.x, 0)
 			boundsNearby += [pygame.Vector2(bounds.x, self.center.y)]
+			boundsForce = (self.center - boundsNearby[0]) - pygame.Vector2(Constants.BORDER_RADIUS)
+			boundsSum += boundsForce
 
 		if self.center.y < Constants.BORDER_RADIUS:
-			boundsForce += pygame.Vector2(0, 0 - self.center.y)
 			boundsNearby += [pygame.Vector2(self.center.x, 0)]
+			boundsForce = (self.center - boundsNearby[0]) - pygame.Vector2(Constants.BORDER_RADIUS)
+			boundsSum += boundsForce
 		elif self.center.y > bounds.y - Constants.BORDER_RADIUS:
-			boundsForce -= pygame.Vector2(0, bounds.y - self.center.y)
 			boundsNearby += [pygame.Vector2(self.center.x, bounds.y)]
+			boundsForce = (self.center - boundsNearby[0]) - pygame.Vector2(Constants.BORDER_RADIUS)
+			boundsSum += boundsForce
 
 		#scale total boundary force by the weight
-		if boundsForce != pygame.Vector2(0,0):
-			pygame.Vector2.scale_to_length(boundsForce, Constants.BOUNDARY_FORCE)
+		if boundsSum != pygame.Vector2(0,0):
+			pygame.Vector2.scale_to_length(boundsSum, Constants.BOUNDARY_FORCE)
 
 		#add scaled boundary force to applied force we have before (seek, flee, wander)
-		self.vel += boundsForce
+		self.vel += boundsSum
 
 		#normalize applied force, scale by dt, and modify agent velocity
 		self.vel += pygame.Vector2.normalize(self.vel) * Constants.DELTATIME
 
-		#draw line representing each boundary force when it is applied from the boundary to the agent.
-		#pygame.draw.line(screen, (0, 0, 255), boundsForce, self.center)
-
+		#draw a force line between boundary and agent
+		if len(boundsNearby) > 0:
+			for bound in boundsNearby:
+				pygame.draw.line(screen, (255, 0, 0), self.center, bound, 1)
+		
 	#update the agent
-	def update(self, bounds):
+	def update(self, bounds, screen):
 
 		#move the agent
 		self.pos += pygame.Vector2.normalize(self.vel) * self.spd
-
-		##keep agent in bounds of world
-		#if self.pos.x <= 0:
-		#	self.pos.x = Constants.BORDER_RADIUS + self.size.x
-		#	self.vel.x = -self.vel.x
-		#if self.pos.x >= bounds.x:
-		#	self.pos.x = bounds.x - Constants.BORDER_RADIUS - self.size.x
-		#	self.vel.x = -self.vel.x
-		#if self.pos.y <= 0:
-		#	self.pos.y = Constants.BORDER_RADIUS + self.size.y
-		#	self.vel.y = -self.vel.y
-		#if self.pos.y >= bounds.y:
-		#	self.pos.y = bounds.y - Constants.BORDER_RADIUS - self.size.y
-		#	self.vel.y = -self.vel.y
 		
-		self.computeBoundaryInfluence(bounds)
-		
+		# ensure agent stays within the world
+		self.computeBoundaryInfluence(bounds, screen)		
 
+		# update agent's position
 		self.rect = self.updateRect()
 		self.center = self.updateCenter()
 

@@ -31,7 +31,7 @@ class Sheep(Agent):
 	def calcTrackingVelocity(self, player):
 		self.targetPos = player.center
 
-	def update(self, bounds, player):
+	def update(self, bounds, screen, player):
 		
 		# flee if player is close enough
 		isFleeing = self.isPlayerClose(player)
@@ -71,7 +71,7 @@ class Sheep(Agent):
 			self.vel.x += (math.cos(theta) - math.sin(theta)) * wanderDirForceNorm.x
 			self.vel.y += (math.sin(theta) - math.cos(theta)) * wanderDirForceNorm.y
 
-		super().update(bounds)
+		super().update(bounds, screen)
 
 	def draw(self, screen):
 		if self.isFleeing == True:

@@ -35,9 +35,9 @@ while not hasQuit:
 	screen.fill(Constants.BACKGROUND_COLOR)
 	
 	#update the agents
-	targetEnemy = player.update(bounds, enemies)
+	targetEnemy = player.update(bounds, screen, enemies)
 	for enemy in enemies:
-		enemy.update(bounds, player)
+		enemy.update(bounds, screen, player)
 
 	#draw the agents
 	player.draw(screen)

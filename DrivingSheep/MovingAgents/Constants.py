@@ -1,6 +1,6 @@
 import pygame
 
-# pygame display
+# pygame properties
 FRAME_RATE = 60
 DISPLAY_WIDTH = 800
 DISPLAY_HEIGHT = 600
@@ -8,7 +8,7 @@ BACKGROUND_COLOR = (100, 149, 237)
 BORDER_RADIUS = 50
 BOUNDARY_FORCE = 1
 CLOCK = pygame.time.Clock()
-DELTATIME = CLOCK.tick(FRAME_RATE) * .001 * FRAME_RATE
+DELTATIME = CLOCK.tick(60) * .001 * FRAME_RATE
 
 # agent properties
 VECTOR_LINE_LENGTH = 25

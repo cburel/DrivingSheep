@@ -23,7 +23,7 @@ class Dog(Agent):
 			#select new sheep to move towards
 			self.targetAgent = max([e for e in enemies], key=lambda e: self.pos.distance_to(pygame.math.Vector2(e.pos.x, e.pos.y)))
 
-	def update(self, bounds, enemies: List):
+	def update(self, bounds, screen, enemies: List):
 		# gets appropriate enemy and moves player towards it
 		# shoutout to Rabbid76 on SO for the lambda fn
 		if self.hasTagged == False:
@@ -39,8 +39,11 @@ class Dog(Agent):
 		dirToSheepForceNorm = pygame.Vector2.normalize(dirToSheepForce)
 		pygame.Vector2.scale_to_length(dirToSheepForceNorm, Constants.DELTATIME * self.spd)
 		self.vel += dirToSheepForceNorm
+
+		#draw line representing each boundary force when it is applied from the boundary to the agent.
+		#pygame.draw.line(screen, (0, 0, 255), boundsForce, self.center)
 			
 		super().updateVelocity(self.vel)
-		super().update(bounds)
+		super().update(bounds, screen)
 
 		return self.targetAgent
