@@ -6,9 +6,6 @@ import math
 import Constants
 from Agent import Agent
 
-#setup
-clock = pygame.time.Clock();
-
 class Sheep(Agent):
 
 	def __init__(self, image, pos, size, spd, color):
@@ -39,6 +36,7 @@ class Sheep(Agent):
 		# flee if player is close enough
 		isFleeing = self.isPlayerClose(player)
 		if isFleeing:
+			#apply flee force
 			#store the calculated, normalized direction to the dog
 			dirToDog = pygame.Vector2.normalize(player.pos - self.pos)
 
@@ -47,8 +45,7 @@ class Sheep(Agent):
 
 			#take applied force, normalize it, scale it by deltatime and speed to modify sheep's velocity
 			dirToDogForceNorm = pygame.Vector2.normalize(dirToDogForce)
-			deltaTime = clock.tick(Constants.FRAME_RATE) * .001 * Constants.FRAME_RATE
-			pygame.Vector2.scale_to_length(dirToDogForceNorm, deltaTime * self.spd)
+			pygame.Vector2.scale_to_length(dirToDogForceNorm, Constants.DELTATIME * self.spd)
 			self.vel += dirToDogForceNorm
 
 
@@ -65,8 +62,14 @@ class Sheep(Agent):
 			else:
 				theta += 180
 
-			self.vel.x += math.cos(theta) - math.sin(theta)
-			self.vel.y += math.sin(theta) - math.cos(theta)
+			#apply wander force			
+			wanderDir = pygame.Vector2.normalize(self.pos)
+			wanderDirForce = wanderDir * Constants.ENEMY_WANDER_FORCE
+			wanderDirForceNorm = pygame.Vector2.normalize(wanderDirForce)
+			pygame.Vector2.scale_to_length(wanderDirForceNorm, Constants.DELTATIME * self.spd)
+
+			self.vel.x += (math.cos(theta) - math.sin(theta)) * wanderDirForceNorm.x
+			self.vel.y += (math.sin(theta) - math.cos(theta)) * wanderDirForceNorm.y
 
 		super().update(bounds)
 

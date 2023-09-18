@@ -9,7 +9,6 @@ from Player import Dog
 pygame.init()
 
 #setup
-clock = pygame.time.Clock();
 screen = pygame.display.set_mode((Constants.DISPLAY_WIDTH, Constants.DISPLAY_HEIGHT))
 dogImage = pygame.image.load('dog.png')
 sheepImage = pygame.image.load('sheep.png')
@@ -53,7 +52,7 @@ while not hasQuit:
 	pygame.display.flip()
 
 	#constrain to 60 fps
-	clock.tick(60)
+	Constants.CLOCK.tick(60)
 
 #quit the game
 pygame.quit()

@@ -6,9 +6,6 @@ from pygame.locals import *
 from Agent import Agent
 import Constants
 
-#setup
-clock = pygame.time.Clock();
-
 
 class Dog(Agent):
 
@@ -40,8 +37,7 @@ class Dog(Agent):
 
 		#take applied force, normalize it, scale it by deltatime and speed to modify dog's velocity
 		dirToSheepForceNorm = pygame.Vector2.normalize(dirToSheepForce)
-		deltaTime = clock.tick(Constants.FRAME_RATE) * .001 * Constants.FRAME_RATE
-		pygame.Vector2.scale_to_length(dirToSheepForceNorm, deltaTime * self.spd)
+		pygame.Vector2.scale_to_length(dirToSheepForceNorm, Constants.DELTATIME * self.spd)
 		self.vel += dirToSheepForceNorm
 			
 		super().updateVelocity(self.vel)
