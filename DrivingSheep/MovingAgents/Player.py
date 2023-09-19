@@ -9,8 +9,8 @@ import Constants
 
 class Dog(Agent):
 
-	def __init__(self, image, pos, size, spd, color):
-		super().__init__(image, pos, size, spd, color)
+	def __init__(self, image, pos, size, spd, color, agentTurnSpd):
+		super().__init__(image, pos, size, spd, color, agentTurnSpd)
 		self.targetAgent = NULL
 		self.hasTagged = False
 
@@ -40,6 +40,8 @@ class Dog(Agent):
 		pygame.Vector2.scale_to_length(dirToSheepForceNorm, Constants.DELTATIME * self.spd)
 		self.vel += dirToSheepForceNorm
 					
+		self.clampWander(Constants.PLAYER_TURN_SPEED)
+
 		super().updateVelocity(self.vel)
 		super().update(bounds, screen)
 

@@ -3,9 +3,10 @@ import pygame
 from pygame.locals import *
 import Constants
 import math
+import random
 
 class Agent():
-	def __init__(self, image, pos, size, spd, color):
+	def __init__(self, image, pos, size, spd, color, turnSpd):
 		self.image = image
 		self.pos = pos
 		self.size = pygame.Vector2(size, size)
@@ -19,6 +20,7 @@ class Agent():
 		self.surf = self.updateSurf()
 		self.upperLeft = self.updateUpperLeft()
 		self.boundingRect = self.updateBoundingRect()
+		self.clampWander(turnSpd)
 
 	#pretty print agent information
 	def __str__(self):
@@ -52,6 +54,32 @@ class Agent():
 				return True
 			else:
 				return False
+
+	def clampWander(self, agentTurnSpd):
+		rotationAngle = random.randrange(-1, 1)
+		theta = math.acos(rotationAngle)
+
+		pickTurn = random.randint(0, 100)
+		if pickTurn < 50:
+			theta += 0
+		else:
+			theta += 180
+
+		#get difference between normalized target direction and normalized current direction
+		curr = self.vel
+		target = pygame.Vector2((math.cos(theta) - math.sin(theta)), (math.sin(theta) - math.cos(theta)))
+		difference = pygame.Vector2.normalize(target) - pygame.Vector2.normalize(curr)
+
+		# if the length of the difference vector is smaller than the turning speed, the agent can turn as fast
+		length = len(difference)
+		if length < agentTurnSpd:
+			self.vel = target
+		else:
+			pygame.Vector2.normalize(difference)
+			pygame.Vector2.scale_to_length(difference, agentTurnSpd)
+			curr += difference
+			pygame.Vector2.normalize(curr)
+			self.vel += curr
 
 	# draw the agent
 	def draw(self, screen):

@@ -8,8 +8,8 @@ from Agent import Agent
 
 class Sheep(Agent):
 
-	def __init__(self, image, pos, size, spd, color):
-		super().__init__(image, pos, size, spd, color)
+	def __init__(self, image, pos, size, spd, color, agentTurnSpd):
+		super().__init__(image, pos, size, spd, color, agentTurnSpd)
 		self.isFleeing = False
 		self.targetPos = None
 	
@@ -70,6 +70,8 @@ class Sheep(Agent):
 
 			self.vel.x += (math.cos(theta) - math.sin(theta)) * wanderDirForceNorm.x
 			self.vel.y += (math.sin(theta) - math.cos(theta)) * wanderDirForceNorm.y
+
+		self.clampWander(Constants.ENEMY_TURN_SPEED)
 
 		super().update(bounds, screen)
 
