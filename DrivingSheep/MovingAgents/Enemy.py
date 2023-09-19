@@ -70,7 +70,7 @@ class Sheep(Agent):
 			self.vel.x += (math.cos(theta) - math.sin(theta)) * wanderDirForceNorm.x
 			self.vel.y += (math.sin(theta) - math.cos(theta)) * wanderDirForceNorm.y
 
-		self.clampWander(Constants.ENEMY_TURN_SPEED)
+		self.clampTurn(Constants.ENEMY_TURN_SPEED)
 
 		super().update(bounds, screen)
 

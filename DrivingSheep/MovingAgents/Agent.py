@@ -20,7 +20,6 @@ class Agent():
 		self.surf = self.updateSurf()
 		self.upperLeft = self.updateUpperLeft()
 		self.boundingRect = self.updateBoundingRect()
-		self.clampWander(turnSpd)
 
 	#pretty print agent information
 	def __str__(self):
@@ -55,7 +54,7 @@ class Agent():
 			else:
 				return False
 
-	def clampWander(self, agentTurnSpd):
+	def clampTurn(self, agentTurnSpd):
 		rotationAngle = random.randrange(-1, 1)
 		theta = math.acos(rotationAngle)
 
@@ -148,7 +147,7 @@ class Agent():
 
 		#scale total boundary force by the weight
 		if boundsSum != pygame.Vector2(0,0):
-			pygame.Vector2.scale_to_length(boundsSum, Constants.DELTATIME * 1000 * self.spd)
+			pygame.Vector2.scale_to_length(boundsSum, Constants.DELTATIME * self.spd)
 
 		#add scaled boundary force to applied force we have before (seek, flee, wander)
 		self.vel += boundsSum
@@ -164,13 +163,11 @@ class Agent():
 		#move the agent
 		self.pos += pygame.Vector2.normalize(self.vel) * self.spd
 		
-		#get surface bounding rect
-		self.boundingRect = self.updateBoundingRect()
-		
 		# ensure agent stays within the world
 		self.computeBoundaryForces(bounds, screen)		
 
 		# update agent's position
+		self.boundingRect = self.updateBoundingRect()
 		self.rect = self.updateRect()
 		self.center = self.updateCenter()
 
