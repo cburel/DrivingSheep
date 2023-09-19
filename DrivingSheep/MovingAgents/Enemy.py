@@ -48,7 +48,6 @@ class Sheep(Agent):
 			pygame.Vector2.scale_to_length(dirToDogForceNorm, Constants.DELTATIME * self.spd)
 			self.vel += dirToDogForceNorm
 
-
 			self.calcTrackingVelocity(player)
 
 		# otherwise, wander
