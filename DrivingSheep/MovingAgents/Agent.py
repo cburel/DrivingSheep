@@ -2,6 +2,7 @@ from asyncio import constants
 import pygame
 from pygame.locals import *
 import Constants
+import math
 
 class Agent():
 	def __init__(self, image, pos, size, spd, color):
@@ -15,7 +16,9 @@ class Agent():
 		self.target = 0
 		self.center = self.updateCenter()
 		self.rect = self.updateRect()
-		self.calcSurface()
+		self.surf = self.updateSurf()
+		self.upperLeft = self.updateUpperLeft()
+		self.boundingRect = self.updateBoundingRect()
 
 	#pretty print agent information
 	def __str__(self):
@@ -32,16 +35,19 @@ class Agent():
 	def updateRect(self):
 		return pygame.Rect(self.pos, self.size)
 
-	#calculate agent's surface and rect
-	def calcSurface(self):
-		self.surf = pygame.transform.rotate(self.image, self.angle)
-		self.upperLeft = self.center - pygame.Vector2(self.surf.get_width(), self.surf.get_height()/2)
-		self.boundingRect = self.surf.get_bounding_rect().move(self.upperLeft.x, self.upperLeft.y)
+	def updateSurf(self):
+		return pygame.transform.rotate(self.image, self.angle)
+
+	def updateUpperLeft(self):
+		return self.center - pygame.Vector2(self.surf.get_width() * 0.5, self.surf.get_height() * 0.5)
+
+	def updateBoundingRect(self):
+		return self.surf.get_bounding_rect().move(self.upperLeft.x, self.upperLeft.y)
 
 	# check for collision with another agent
 	def isInCollision(self, agent):
 		if agent != None:
-			if self.rect.colliderect(agent.rect):
+			if self.boundingRect.colliderect(agent.boundingRect):
 				print("collision!")
 				return True
 			else:
@@ -55,7 +61,7 @@ class Agent():
 
 		#calculate surface to draw
 		self.surf = pygame.transform.rotate(self.image, self.angle)
-		upperLeft = self.center - pygame.Vector2(self.surf.get_width(), self.surf.get_height()/2)
+		upperLeft = self.center - pygame.Vector2(self.surf.get_width() * 0.5, self.surf.get_height() * 0.5)
 				
 		#draw black debug collision rect border
 		pygame.draw.rect(screen, (0,0,0), self.rect, 1)
@@ -74,6 +80,15 @@ class Agent():
 		
 		#blit the dog/sheep image
 		screen.blit(self.surf, [upperLeft.x, upperLeft.y])
+
+		#change image angle
+		self.angle = math.degrees(math.atan2(-self.vel.y, self.vel.x)) - 90
+
+		# update and draw bounding rect
+		self.surf = self.updateSurf()
+		self.upperLeft = self.updateUpperLeft()
+		self.boundingRect = self.updateBoundingRect()
+		pygame.draw.rect(screen, (0,0,0), self.boundingRect, 1)
 
 	def computeBoundaryForces(self, bounds, screen):	
 		boundsNearbyList = []
@@ -110,9 +125,6 @@ class Agent():
 		#add scaled boundary force to applied force we have before (seek, flee, wander)
 		self.vel += boundsSum
 
-		#normalize applied force, scale by dt, and modify agent velocity
-		#self.vel += pygame.Vector2.normalize(self.vel) * Constants.DELTATIME
-
 		#draw a force line between boundary and agent
 		if len(boundsNearbyList) > 0:
 			for bound in boundsNearbyList:
@@ -123,6 +135,9 @@ class Agent():
 
 		#move the agent
 		self.pos += pygame.Vector2.normalize(self.vel) * self.spd
+		
+		#get surface bounding rect
+		self.boundingRect = self.updateBoundingRect()
 		
 		# ensure agent stays within the world
 		self.computeBoundaryForces(bounds, screen)		
