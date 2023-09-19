@@ -8,8 +8,8 @@ from Agent import Agent
 
 class Sheep(Agent):
 
-	def __init__(self, image, pos, size, spd, color, agentTurnSpd):
-		super().__init__(image, pos, size, spd, color, agentTurnSpd)
+	def __init__(self, image, pos, size, spd, color, turnSpd):
+		super().__init__(image, pos, size, spd, color, turnSpd)
 		self.isFleeing = False
 		self.targetPos = None
 	

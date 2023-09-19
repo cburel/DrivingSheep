@@ -5,7 +5,7 @@ import math
 import random
 
 class Agent():
-	def __init__(self, image, pos, size, spd, color, agentTurnSpd):
+	def __init__(self, image, pos, size, spd, color, turnSpd):
 		self.image = image
 		self.pos = pos
 		self.size = pygame.Vector2(size, size)
@@ -53,7 +53,7 @@ class Agent():
 			else:
 				return False
 
-	def clampTurn(self, agentTurnSpd):
+	def clampTurn(self, turnSpd):
 		rotationAngle = random.randrange(-1, 1)
 		theta = math.acos(rotationAngle)
 
@@ -70,11 +70,11 @@ class Agent():
 
 		# if the length of the difference vector is smaller than the turning speed, the agent can turn as fast
 		length = len(difference)
-		if length < agentTurnSpd:
+		if length < turnSpd:
 			self.vel = target
 		else:
 			pygame.Vector2.normalize(difference)
-			pygame.Vector2.scale_to_length(difference, agentTurnSpd)
+			pygame.Vector2.scale_to_length(difference, turnSpd)
 			curr += difference
 			pygame.Vector2.normalize(curr)
 			self.vel += curr
