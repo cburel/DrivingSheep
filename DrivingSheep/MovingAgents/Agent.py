@@ -1,4 +1,3 @@
-from asyncio import constants
 import pygame
 from pygame.locals import *
 import Constants
@@ -6,7 +5,7 @@ import math
 import random
 
 class Agent():
-	def __init__(self, image, pos, size, spd, color, turnSpd):
+	def __init__(self, image, pos, size, spd, color, agentTurnSpd):
 		self.image = image
 		self.pos = pos
 		self.size = pygame.Vector2(size, size)
