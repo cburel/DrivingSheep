@@ -12,6 +12,7 @@ class Sheep(Agent):
 		super().__init__(image, pos, size, spd, color, turnSpd)
 		self.isFleeing = False
 		self.targetPos = None
+		self.ticks = pygame.time.get_ticks()
 	
 	def switchMode(self):
 		if self.isFleeing:
@@ -31,34 +32,48 @@ class Sheep(Agent):
 	def calcTrackingVelocity(self, player):
 		self.targetPos = player.center
 
+	def updateDirectionTime(self):
+		ticks = pygame.time.get_ticks() - self.ticks
+		if ticks > 1000:
+			self.ticks = pygame.time.get_ticks()
+			return True
+		else:
+			return False
+
 	def update(self, bounds, screen, player):
 
+		# initialize velocity
 		if pygame.Vector2.length(self.vel) == 0:
 			angle = math.acos(random.randrange(-1, 1))
-			self.vel = pygame.Vector2(math.cos(angle), math.sin(angle))
+			self.vel = pygame.Vector2(math.cos(angle), math.sin(angle)) * self.spd
 		
+		#check if player is close
 		self.isFleeing = self.isPlayerClose(player)
 
+		# get boundary forces for sum
 		boundsForce = self.computeBoundaryForces(bounds, screen)
 
 		# wander if player isn't close
 		if not self.isFleeing:
-			rotationAngle = random.randrange(-1, 1)
-			theta = math.acos(rotationAngle)
 
-			pickTurn = random.randint(0, 100)
-			if pickTurn < 50:
-				theta += 0
+			if self.updateDirectionTime() == True:
+				theta = math.radians(random.randrange(-100, 100) / 100)
+
+				pickTurn = random.randint(0, 100)
+				if pickTurn < 50:
+					theta += 0
+				else:
+					theta += 180
+
+				#apply wander force			
+				wanderDir = pygame.Vector2.normalize(self.vel) + pygame.Vector2(math.cos(theta), math.sin(theta))
+				wanderDirForce = wanderDir * Constants.ENEMY_WANDER_FORCE
+				wanderDirForceNorm = pygame.Vector2.normalize(wanderDirForce)
+				#pygame.Vector2.scale_to_length(wanderDirForceNorm, Constants.DELTATIME * self.spd)
+
+				totalForce = wanderDirForceNorm + boundsForce
 			else:
-				theta += 180
-
-			#apply wander force			
-			wanderDir = pygame.Vector2.normalize(self.pos)
-			wanderDirForce = wanderDir * Constants.ENEMY_WANDER_FORCE
-			wanderDirForceNorm = pygame.Vector2.normalize(wanderDirForce)
-			#pygame.Vector2.scale_to_length(wanderDirForceNorm, Constants.DELTATIME * self.spd)
-
-			totalForce = wanderDirForceNorm + boundsForce
+				totalForce = boundsForce
 
 			#self.vel.x += (math.cos(theta) - math.sin(theta)) * wanderDirForceNorm.x
 			#self.vel.y += (math.sin(theta) - math.cos(theta)) * wanderDirForceNorm.y
@@ -76,13 +91,14 @@ class Sheep(Agent):
 			dirToDogForceNorm = pygame.Vector2.normalize(dirToDogForce)
 			#pygame.Vector2.scale_to_length(dirToDogForceNorm, Constants.DELTATIME * self.spd)
 			
-			totalForce = dirToDogForceNorm + boundsForce
+			totalForce = dirToDogForce + boundsForce
 
 			self.calcTrackingVelocity(player)
-			
-
+					
+		# prevent sheep from turning on a dime
 		self.clampTurn(Constants.ENEMY_TURN_SPEED, totalForce)
 
+		# update the agent
 		super().update(bounds, screen)
 
 	def draw(self, screen):

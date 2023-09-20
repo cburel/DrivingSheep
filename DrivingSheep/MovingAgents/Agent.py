@@ -48,7 +48,6 @@ class Agent():
 	def isInCollision(self, agent):
 		if agent != None:
 			if self.boundingRect.colliderect(agent.boundingRect):
-				print("collision!")
 				return True
 			else:
 				return False
@@ -58,18 +57,21 @@ class Agent():
 		
 		#get difference between normalized target direction and normalized current direction
 		curr = self.vel
-		difference = pygame.Vector2.normalize(target) - pygame.Vector2.normalize(curr)
 
-		# if the length of the difference vector is smaller than the turning speed, the agent can turn as fast
-		length = pygame.Vector2.length(difference)
-		if length < turnSpd:
-			self.vel = target
+		if pygame.Vector2.length(target) == 0:
+			return
 		else:
-			pygame.Vector2.normalize(difference)
-			pygame.Vector2.scale_to_length(difference, turnSpd)
-			curr += difference
-			pygame.Vector2.normalize(curr)
-			self.vel += curr
+			difference = pygame.Vector2.normalize(target) - pygame.Vector2.normalize(curr)
+
+			# if the length of the difference vector is smaller than the turning speed, the agent can turn as fast
+			length = pygame.Vector2.length(difference)
+			if length < turnSpd:
+				self.vel = target
+			else:
+				difference = pygame.Vector2.normalize(difference)
+				pygame.Vector2.scale_to_length(difference, turnSpd)
+				self.vel += difference
+			self.vel = pygame.Vector2.normalize(self.vel) * self.spd
 
 	# draw the agent
 	def draw(self, screen):
@@ -157,7 +159,7 @@ class Agent():
 		self.pos += pygame.Vector2.normalize(self.vel) * self.spd
 		
 		# ensure agent stays within the world
-		self.computeBoundaryForces(bounds, screen)		
+		#self.computeBoundaryForces(bounds, screen)		
 
 		# update agent's position
 		self.boundingRect = self.updateBoundingRect()
