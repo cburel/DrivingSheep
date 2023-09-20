@@ -25,7 +25,7 @@ class Dog(Agent):
 			self.targetAgent = max([e for e in enemies], key=lambda e: self.pos.distance_to(pygame.math.Vector2(e.pos.x, e.pos.y)))
 
 	def draw(self, screen):
-		pygame.draw.line(screen, (255, 0, 0), self.center, self.targetAgent.center)
+		pygame.draw.line(screen, (255, 0, 0), self.center, self.targetAgent.center, 3)
 		super().draw(screen)
 
 	def update(self, bounds, screen, enemies: List):
@@ -50,8 +50,6 @@ class Dog(Agent):
 
 		#take applied force, normalize it, scale it by deltatime and speed to modify dog's velocity
 		dirToSheepForceNorm = pygame.Vector2.normalize(dirToSheepForce)
-		#pygame.Vector2.scale_to_length(dirToSheepForceNorm, Constants.DELTATIME * self.spd)
-		#self.vel += dirToSheepForceNorm
 		
 		totalForce = dirToSheepForceNorm + boundsForce
 		self.clampTurn(Constants.PLAYER_TURN_SPEED, totalForce)

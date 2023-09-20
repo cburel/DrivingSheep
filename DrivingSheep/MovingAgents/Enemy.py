@@ -69,14 +69,10 @@ class Sheep(Agent):
 				wanderDir = pygame.Vector2.normalize(self.vel) + pygame.Vector2(math.cos(theta), math.sin(theta))
 				wanderDirForce = wanderDir * Constants.ENEMY_WANDER_FORCE
 				wanderDirForceNorm = pygame.Vector2.normalize(wanderDirForce)
-				#pygame.Vector2.scale_to_length(wanderDirForceNorm, Constants.DELTATIME * self.spd)
 
 				totalForce = wanderDirForceNorm + boundsForce
 			else:
 				totalForce = boundsForce
-
-			#self.vel.x += (math.cos(theta) - math.sin(theta)) * wanderDirForceNorm.x
-			#self.vel.y += (math.sin(theta) - math.cos(theta)) * wanderDirForceNorm.y
 
 		# otherwise, flee
 		else:
@@ -84,13 +80,9 @@ class Sheep(Agent):
 			#store the calculated, normalized direction to the dog
 			dirToDog = pygame.Vector2.normalize(player.pos - self.pos)
 
-			#scale direction by the weight of this force to get applied force and store it
+			#scale direction by the weight of this force to get applied force
 			dirToDogForce = -dirToDog * Constants.ENEMY_FLEE_FORCE
-
-			#take applied force, normalize it, scale it by deltatime and speed to modify sheep's velocity
-			dirToDogForceNorm = pygame.Vector2.normalize(dirToDogForce)
-			#pygame.Vector2.scale_to_length(dirToDogForceNorm, Constants.DELTATIME * self.spd)
-			
+						
 			totalForce = dirToDogForce + boundsForce
 
 			self.calcTrackingVelocity(player)

@@ -138,13 +138,6 @@ class Agent():
 			boundsSum += boundsForce
 			boundsNearbyList.append(boundsNearby)
 
-		#scale total boundary force by the weight
-		#if boundsSum != pygame.Vector2(0,0):
-		#	pygame.Vector2.scale_to_length(boundsSum, Constants.DELTATIME * self.spd)
-
-		#add scaled boundary force to applied force we have before (seek, flee, wander)
-		#self.vel += boundsSum
-
 		#draw a force line between boundary and agent
 		if len(boundsNearbyList) > 0:
 			for bound in boundsNearbyList:
