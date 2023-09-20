@@ -39,8 +39,9 @@ class Dog(Agent):
 		dirToSheepForceNorm = pygame.Vector2.normalize(dirToSheepForce)
 		pygame.Vector2.scale_to_length(dirToSheepForceNorm, Constants.DELTATIME * self.spd)
 		self.vel += dirToSheepForceNorm
-					
-		self.clampTurn(Constants.PLAYER_TURN_SPEED)
+		
+		totalForce = dirToSheepForceNorm
+		self.clampTurn(Constants.PLAYER_TURN_SPEED, totalForce)
 
 		super().updateVelocity(self.vel)
 		super().update(bounds, screen)

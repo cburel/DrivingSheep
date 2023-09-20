@@ -53,23 +53,15 @@ class Agent():
 			else:
 				return False
 
-	def clampTurn(self, turnSpd):
-		rotationAngle = random.randrange(-1, 1)
-		theta = math.acos(rotationAngle)
-
-		pickTurn = random.randint(0, 100)
-		if pickTurn < 50:
-			theta += 0
-		else:
-			theta += 180
-
+	def clampTurn(self, turnSpd, totalForce):
+		target = totalForce
+		
 		#get difference between normalized target direction and normalized current direction
 		curr = self.vel
-		target = pygame.Vector2((math.cos(theta) - math.sin(theta)), (math.sin(theta) - math.cos(theta)))
 		difference = pygame.Vector2.normalize(target) - pygame.Vector2.normalize(curr)
 
 		# if the length of the difference vector is smaller than the turning speed, the agent can turn as fast
-		length = len(difference)
+		length = pygame.Vector2.length(difference)
 		if length < turnSpd:
 			self.vel = target
 		else:
@@ -145,16 +137,18 @@ class Agent():
 			boundsNearbyList.append(boundsNearby)
 
 		#scale total boundary force by the weight
-		if boundsSum != pygame.Vector2(0,0):
-			pygame.Vector2.scale_to_length(boundsSum, Constants.DELTATIME * self.spd)
+		#if boundsSum != pygame.Vector2(0,0):
+		#	pygame.Vector2.scale_to_length(boundsSum, Constants.DELTATIME * self.spd)
 
 		#add scaled boundary force to applied force we have before (seek, flee, wander)
-		self.vel += boundsSum
+		#self.vel += boundsSum
 
 		#draw a force line between boundary and agent
 		if len(boundsNearbyList) > 0:
 			for bound in boundsNearbyList:
 				pygame.draw.line(screen, (255, 0, 0), self.center, bound, 1)
+
+		return boundsSum
 		
 	#update the agent
 	def update(self, bounds, screen):

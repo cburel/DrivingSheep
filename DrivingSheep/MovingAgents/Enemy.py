@@ -32,26 +32,17 @@ class Sheep(Agent):
 		self.targetPos = player.center
 
 	def update(self, bounds, screen, player):
+
+		if pygame.Vector2.length(self.vel) == 0:
+			angle = math.acos(random.randrange(-1, 1))
+			self.vel = pygame.Vector2(math.cos(angle), math.sin(angle))
 		
-		# flee if player is close enough
-		isFleeing = self.isPlayerClose(player)
-		if isFleeing:
-			#apply flee force
-			#store the calculated, normalized direction to the dog
-			dirToDog = pygame.Vector2.normalize(player.pos - self.pos)
+		self.isFleeing = self.isPlayerClose(player)
 
-			#scale direction by the weight of this force to get applied force and store it
-			dirToDogForce = dirToDog * Constants.ENEMY_FLEE_FORCE
+		boundsForce = self.computeBoundaryForces(bounds, screen)
 
-			#take applied force, normalize it, scale it by deltatime and speed to modify sheep's velocity
-			dirToDogForceNorm = pygame.Vector2.normalize(dirToDogForce)
-			pygame.Vector2.scale_to_length(dirToDogForceNorm, Constants.DELTATIME * self.spd)
-			self.vel += dirToDogForceNorm
-
-			self.calcTrackingVelocity(player)
-
-		# otherwise, wander
-		else:
+		# wander if player isn't close
+		if not self.isFleeing:
 			rotationAngle = random.randrange(-1, 1)
 			theta = math.acos(rotationAngle)
 
@@ -65,12 +56,32 @@ class Sheep(Agent):
 			wanderDir = pygame.Vector2.normalize(self.pos)
 			wanderDirForce = wanderDir * Constants.ENEMY_WANDER_FORCE
 			wanderDirForceNorm = pygame.Vector2.normalize(wanderDirForce)
-			pygame.Vector2.scale_to_length(wanderDirForceNorm, Constants.DELTATIME * self.spd)
+			#pygame.Vector2.scale_to_length(wanderDirForceNorm, Constants.DELTATIME * self.spd)
 
-			self.vel.x += (math.cos(theta) - math.sin(theta)) * wanderDirForceNorm.x
-			self.vel.y += (math.sin(theta) - math.cos(theta)) * wanderDirForceNorm.y
+			totalForce = wanderDirForceNorm + boundsForce
 
-		self.clampTurn(Constants.ENEMY_TURN_SPEED)
+			#self.vel.x += (math.cos(theta) - math.sin(theta)) * wanderDirForceNorm.x
+			#self.vel.y += (math.sin(theta) - math.cos(theta)) * wanderDirForceNorm.y
+
+		# otherwise, flee
+		else:
+			#apply flee force
+			#store the calculated, normalized direction to the dog
+			dirToDog = pygame.Vector2.normalize(player.pos - self.pos)
+
+			#scale direction by the weight of this force to get applied force and store it
+			dirToDogForce = -dirToDog * Constants.ENEMY_FLEE_FORCE
+
+			#take applied force, normalize it, scale it by deltatime and speed to modify sheep's velocity
+			dirToDogForceNorm = pygame.Vector2.normalize(dirToDogForce)
+			#pygame.Vector2.scale_to_length(dirToDogForceNorm, Constants.DELTATIME * self.spd)
+			
+			totalForce = dirToDogForceNorm + boundsForce
+
+			self.calcTrackingVelocity(player)
+			
+
+		self.clampTurn(Constants.ENEMY_TURN_SPEED, totalForce)
 
 		super().update(bounds, screen)
 
